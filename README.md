@@ -2,10 +2,9 @@
 Post powermail form submissions as jira issues
 
 ## Installation 
-`composer require traw/powermail-jira-issues`
+This is the base extension, and doesn't work on it's own - please install either https://github.com/thomasrawiel/powermail-jira-issues or https://github.com/thomasrawiel/powermail-jiraonpremise-issues
 
 ## Requirements
-This extension currently only works with Jira Cloud, not with the on premise (self-hosted) version.
 
 You will need:
 - at least 1 Jira project where you can post issues.
@@ -23,7 +22,7 @@ It is recommended to have your credentials and security related configuration va
 ### Connecting to your Jira instance
 
 ```
-$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira_issues'] = [
+$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
     'connection' => [
         'jiraHost' => getenv('JIRAAPI_V3_HOST'),
         'jiraUser' => getenv('JIRAAPI_V3_USER'),
@@ -42,7 +41,7 @@ For each project add a configuration array
 Some options like Issue type and priority can be configured (WIP)
 
 ```
-$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira_issues'] = [
+$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
     'issues' => [
         //configuration key, must be unique, max 20 chars
         'my_issues' => [

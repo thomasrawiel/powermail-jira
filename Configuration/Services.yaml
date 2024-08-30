@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  
+  TRAW\PowermailJira\:
+    resource: '../Classes/*'
+
+  TRAW\PowermailJira\EventListener\PowermailSubmitEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'traw/powermail-jira-submit'
+        method: pushToJira
+
+  TRAW\PowermailJira\Domain\Model\Form:
+    tags:
+      - name: 'extender.extends'
+        class: In2code\Powermail\Domain\Model\Form

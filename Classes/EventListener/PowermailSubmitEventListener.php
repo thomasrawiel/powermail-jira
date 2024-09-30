@@ -3,12 +3,10 @@
 namespace TRAW\PowermailJira\EventListener;
 
 use In2code\Powermail\Domain\Model\Answer;
-use JiraCloud\Configuration\ArrayConfiguration;
-use JiraCloud\Issue\IssueService as JiraIssueService;
-use JiraCloud\JiraException;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
-use TRAW\PowermailJira\Service\IssueService as MyIssueService;
+use TRAW\PowermailJira\Service\ClassService;
+use TRAW\PowermailJira\Service\IssueService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -18,18 +16,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PowermailSubmitEventListener
 {
     /**
-     * @var MyIssueService
+     * @var IssueService
      */
-    protected MyIssueService $issueService;
+    protected IssueService $issueService;
     /**
      * @var JiraConfiguration
      */
     protected JiraConfiguration $jiraConfig;
 
     /**
-     * @param MyIssueService $issueService
+     * @param IssueService $issueService
      */
-    public function __construct(MyIssueService $issueService)
+    public function __construct(IssueService $issueService)
     {
         $this->issueService = $issueService;
         $this->jiraConfig = new JiraConfiguration();
@@ -41,6 +39,7 @@ class PowermailSubmitEventListener
      * @return void
      * @throws JiraException
      * @throws \In2code\Powermail\Exception\DeprecatedException
+     * @throws \TRAW\PowermailJira\Exception\JiraException
      * @throws \JsonMapper_Exception
      */
     public function pushToJira(PowermailSubmitEvent $event)
@@ -51,10 +50,13 @@ class PowermailSubmitEventListener
         }
 
         try {
-            $jiraIssueService = new JiraIssueService(new ArrayConfiguration($connection));
+            $configurationClass = ClassService::getArrayConfigurationClass();
+            $jiraIssueServiceClass = ClassService::getJiraIssueServiceClass();
+
+            $jiraIssueService = new $jiraIssueServiceClass(new $configurationClass($connection));
             $issueField = $this->issueService->createIssue($event);
             $issue = $jiraIssueService->create($issueField);
-        } catch (JiraException $exception) {
+        } catch (\Exception $exception) {
             throw $exception;
         }
 
@@ -75,7 +77,7 @@ class PowermailSubmitEventListener
                     }
                 }
                 $jiraIssueService->addAttachments($issue->key, $attachments);
-            } catch (JiraException $exception) {
+            } catch (\Exception $exception) {
                 throw $exception;
             }
         }

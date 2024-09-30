@@ -2,9 +2,9 @@
 
 namespace TRAW\PowermailJira\Service;
 
-use JiraCloud\Configuration\ArrayConfiguration;
-use JiraCloud\User\UserService;
+use TRAW\PowermailJira\Configuration\ArrayConfiguration;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class UserLookupService
@@ -35,7 +35,10 @@ class UserLookupService
      */
     public function lookup(string $searchString, string $project): array
     {
-        $userService = new UserService(new ArrayConfiguration($this->jiraConfiguration->getConnectionConfiguration()));
+        $userServiceClass = ClassService::getUserServiceClass();
+        $arrayConfigurationClass = ClassService::getArrayConfigurationClass();
+
+        $userService = new $userServiceClass(new $arrayConfigurationClass($this->jiraConfiguration->getConnectionConfiguration()));
         $users = $userService->findAssignableUsers([
             'project' => $project,
             'startAt' => 0,

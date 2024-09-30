@@ -3,11 +3,11 @@
 namespace TRAW\PowermailJira\Service;
 
 use DH\Adf\Node\Block\Document;
-use In2code\Powermail\Domain\Model\Answer;
 use JiraCloud\ADF\AtlassianDocumentFormat;
-use JiraCloud\Issue\IssueField;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
+use TRAW\PowermailJira\Domain\Model\IssueDocument;
+use TRAW\PowermailJira\Domain\Model\IssueField;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
 
 /**
@@ -51,32 +51,38 @@ class IssueService
         $configuration = $this->jiraConfiguration->getConfigurationByKey($mail->getForm()->getJiraTarget());
 
 
-        $doc = new Document();
+//        $doc = new Document();
+//
+//        foreach ($answers as $answer) {
+//            $doc->paragraph()
+//                ->strong($answer->getField()->getTitle())
+//                ->end();
+//            switch ($answer->getValueType()) {
+//                case Answer::VALUE_TYPE_UPLOAD:
+//                case Answer::VALUE_TYPE_ARRAY:
+//                    foreach ($answer->getValue() as $uploadedFile) {
+//                        $doc->paragraph()->text($uploadedFile)->end();
+//                    }
+//                    break;
+//                default:
+//                    $doc->paragraph()->text($answer->getValue())->end();
+//            }
+//
+//        }
+//        $doc->paragraph()->em('- - - This issue has been automatically created - - -')->end();
+//        $doc->paragraph()->em('URL: ' . $url)->end();
 
-        foreach ($answers as $answer) {
-            $doc->paragraph()
-                ->strong($answer->getField()->getTitle())
-                ->end();
-            switch ($answer->getValueType()) {
-                case Answer::VALUE_TYPE_UPLOAD:
-                case Answer::VALUE_TYPE_ARRAY:
-                    foreach ($answer->getValue() as $uploadedFile) {
-                        $doc->paragraph()->text($uploadedFile)->end();
-                    }
-                    break;
-                default:
-                    $doc->paragraph()->text($answer->getValue())->end();
-            }
+        $issueDocumentClass = ClassService::getIssueDocumentClass();
+        $issueFieldClass = ClassService::getIssueFieldClass();
+        $issueDocument = new $issueDocumentClass();
 
-        }
-        $doc->paragraph()->em('- - - This issue has been automatically created - - -')->end();
-        $doc->paragraph()->em('URL: ' . $url)->end();
 
-        $issueField = (new IssueField())->setProjectKey($configuration->getProjectKey())
+        $issueField = (new $issueFieldClass())->setProjectKey($configuration->getProjectKey())
             ->setSummary($configuration->getSubject() ?? $mail->getSubject())
             ->setPriorityNameAsString($configuration->getPriority())
             ->setIssueTypeAsString($configuration->getType())
-            ->setDescription(new AtlassianDocumentFormat($doc));
+            //->setDescription(new AtlassianDocumentFormat($doc));
+            ->setDescription($issueDocument->getDescriptionForIssue($answers));
 
         foreach ($configuration->getLabels() as $label) {
             $issueField->addLabelAsString($label);

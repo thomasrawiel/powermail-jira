@@ -46,10 +46,10 @@ class ClassService
     {
         $class = '';
         if (class_exists(\TRAW\PowermailJiraonpremiseIssues\Domain\Model\IssueDocument::class)) {
-            $class = TRAW\PowermailJiraonpremiseIssues\Domain\Model\IssueDocument::class;
+            $class = \TRAW\PowermailJiraonpremiseIssues\Domain\Model\IssueDocument::class;
         }
         if (class_exists(\TRAW\PowermailJiraIssues\Domain\Model\IssueDocument::class)) {
-            $class = TRAW\PowermailJiraIssues\Domain\Model\IssueDocument::class;
+            $class = \TRAW\PowermailJiraIssues\Domain\Model\IssueDocument::class;
         }
         return $class;
     }

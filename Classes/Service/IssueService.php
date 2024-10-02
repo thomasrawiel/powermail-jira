@@ -2,8 +2,6 @@
 
 namespace TRAW\PowermailJira\Service;
 
-use DH\Adf\Node\Block\Document;
-use JiraCloud\ADF\AtlassianDocumentFormat;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Domain\Model\IssueDocument;
@@ -41,7 +39,7 @@ class IssueService
      * @return IssueField
      * @throws \Exception
      */
-    public function createIssue(PowermailSubmitEvent $event): IssueField
+    public function createIssue(PowermailSubmitEvent $event)
     {
         $mail = $event->getMail();
         $uri = $event->getUri();
@@ -81,8 +79,7 @@ class IssueService
             ->setSummary($configuration->getSubject() ?? $mail->getSubject())
             ->setPriorityNameAsString($configuration->getPriority())
             ->setIssueTypeAsString($configuration->getType())
-            //->setDescription(new AtlassianDocumentFormat($doc));
-            ->setDescription($issueDocument->getDescriptionForIssue($answers));
+            ->setDescription($issueDocument->getDescriptionForIssue($event));
 
         foreach ($configuration->getLabels() as $label) {
             $issueField->addLabelAsString($label);
@@ -90,10 +87,13 @@ class IssueService
 
         if (!empty($configuration->getAssignee())) {
             $assignToUser = $this->userLookupService->lookup($configuration->getAssignee(), $configuration->getProjectKey());
-            $issueField->setAssigneeAccountId($assignToUser['accountId']);
-        } else {
-            $issueField->setAssigneeToDefault();
-        }
+            if (empty($assignToUser)) {
+                $issueField->setAssigneeToDefault();
+            } else {
+
+                $issueField->setAssigneeAccountId($assignToUser['accountId']);
+            }
+        } //else dont assign anyone
 
         return $issueField;
     }

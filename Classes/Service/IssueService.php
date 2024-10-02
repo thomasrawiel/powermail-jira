@@ -2,6 +2,7 @@
 
 namespace TRAW\PowermailJira\Service;
 
+use TRAW\PowermailJira\Configuration\ConditionalConfiguraton;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Domain\Model\IssueDocument;
@@ -14,10 +15,8 @@ use TRAW\PowermailJira\Events\PowermailSubmitEvent;
  */
 class IssueService
 {
-    /**
-     * @var JiraConfiguration|null
-     */
-    protected JiraConfiguration|null $jiraConfiguration = null;
+
+    protected ConditionalConfiguraton|null $jiraConfiguration = null;
 
     protected UserLookupService|null $userLookupService = null;
 
@@ -25,12 +24,10 @@ class IssueService
     /**
      * @param JiraConfiguration $jiraConfiguration
      */
-    public function __construct(JiraConfiguration $jiraConfiguration, UserLookupService $userLookupService)
+    public function __construct(ConditionalConfiguraton $jiraConfiguration, UserLookupService $userLookupService)
     {
         $this->jiraConfiguration = $jiraConfiguration;
         $this->userLookupService = $userLookupService;
-
-
     }
 
     /**
@@ -46,34 +43,15 @@ class IssueService
         $url = $uri->getScheme() . '://' . $uri->getHost() . $uri->getPath();
         $answers = $mail->getAnswers();
         /** @var IssueConfiguration $configuration */
-        $configuration = $this->jiraConfiguration->getConfigurationByKey($mail->getForm()->getJiraTarget());
-
-
-//        $doc = new Document();
-//
-//        foreach ($answers as $answer) {
-//            $doc->paragraph()
-//                ->strong($answer->getField()->getTitle())
-//                ->end();
-//            switch ($answer->getValueType()) {
-//                case Answer::VALUE_TYPE_UPLOAD:
-//                case Answer::VALUE_TYPE_ARRAY:
-//                    foreach ($answer->getValue() as $uploadedFile) {
-//                        $doc->paragraph()->text($uploadedFile)->end();
-//                    }
-//                    break;
-//                default:
-//                    $doc->paragraph()->text($answer->getValue())->end();
-//            }
-//
-//        }
-//        $doc->paragraph()->em('- - - This issue has been automatically created - - -')->end();
-//        $doc->paragraph()->em('URL: ' . $url)->end();
+        $configuration = $this->jiraConfiguration->getConfiguration($event);
 
         $issueDocumentClass = ClassService::getIssueDocumentClass();
         $issueFieldClass = ClassService::getIssueFieldClass();
         $issueDocument = new $issueDocumentClass();
 
+        if (empty($configuration)) {
+            throw new \Exception('No matching configuration found');
+        }
 
         $issueField = (new $issueFieldClass())->setProjectKey($configuration->getProjectKey())
             ->setSummary($configuration->getSubject() ?? $mail->getSubject())
@@ -90,10 +68,14 @@ class IssueService
             if (empty($assignToUser)) {
                 $issueField->setAssigneeToDefault();
             } else {
-
-                $issueField->setAssigneeAccountId($assignToUser['accountId']);
+                if($assignToUser['accountId']) {
+                    $issueField->setAssigneeAccountId($assignToUser['accountId']);
+                }else {
+                    //fallback for v2 api
+                    $issueField->setAssigneeNameAsString($assignToUser['name']);
+                }
             }
-        } //else dont assign anyone
+        }
 
         return $issueField;
     }

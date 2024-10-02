@@ -47,15 +47,11 @@ class UserLookupService
 
         $found = false;
 
-        foreach (['accountId', 'emailAddress', 'name', 'displayName'] as $searchColumn) {
+        foreach (['accountId', 'emailAddress', 'name', 'displayName', 'key'] as $searchColumn) {
             $found = array_search($searchString, array_column($users, $searchColumn));
             if ($found !== false) break;
         }
 
-        if ($found === false) {
-            throw new Exception('User that should be assigned was not found');
-        }
-
-        return $users[$found]->toArray();
+        return $found !== false ? $users[$found]->toArray() : [];
     }
 }

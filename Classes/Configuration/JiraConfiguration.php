@@ -81,6 +81,6 @@ class JiraConfiguration
      */
     public function getConfigurationByKey(string $key): IssueConfiguration
     {
-        return new IssueConfiguration($this->getIssueConfiguration()[$key]);
+        return $this->getIssueConfiguration()[$key];
     }
 }

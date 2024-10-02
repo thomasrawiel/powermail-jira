@@ -23,11 +23,11 @@ class IssueConfiguration
     /**
      * @var string|mixed
      */
-    protected string $priority = '';
+    protected string|array $priority = '';
     /**
      * @var string|mixed|null
      */
-    protected ?string $assignee = null;
+    protected string|array $assignee = '';
     /**
      * @var bool
      */
@@ -42,12 +42,8 @@ class IssueConfiguration
      *
      * @throws \Exception
      */
-    public function __construct(?array $conf)
+    public function __construct(?array $conf = null)
     {
-        if (empty($conf) || empty($conf['project_key'])) {
-            throw new \Exception('No configuration for this board');
-        }
-
         $this->projectKey = $conf['project_key'] ?? '';
         $this->subject = $conf['subject'] ?? null;
         $this->type = $conf['type'] ?? 'Task';
@@ -56,52 +52,80 @@ class IssueConfiguration
         $this->labels = $conf['labels'] ?? [];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAssignee(): mixed
-    {
-        return $this->assignee;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPriority(): mixed
-    {
-        return $this->priority;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProjectKey(): mixed
+    public function getProjectKey(): string
     {
         return $this->projectKey;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getType(): mixed
+    public function setProjectKey(string $projectKey): void
     {
-        return $this->type;
+        $this->projectKey = $projectKey;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    /**
-     * @return array
-     */
+    public function setSubject(?string $subject): void
+    {
+        $this->subject = $subject;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function getPriority(): array|string
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(array|string $priority): void
+    {
+        $this->priority = $priority;
+    }
+
+    public function getAssignee(): array|string
+    {
+        return $this->assignee;
+    }
+
+    public function setAssignee(array|string $assignee): void
+    {
+        $this->assignee = $assignee;
+    }
+
+    public function isAssigneeIsAccountId(): bool
+    {
+        return $this->assigneeIsAccountId;
+    }
+
+    public function setAssigneeIsAccountId(bool $assigneeIsAccountId): void
+    {
+        $this->assigneeIsAccountId = $assigneeIsAccountId;
+    }
+
     public function getLabels(): array
     {
         return $this->labels;
     }
 
+    public function setLabels(array $labels): void
+    {
+        $this->labels = $labels;
+    }
+
+    public function set($key, $value)
+    {
+        if (property_exists($this, $key)) {
+            $this->$key = $value;
+        }
+    }
 }

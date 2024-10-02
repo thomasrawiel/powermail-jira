@@ -48,11 +48,11 @@ class IssueConfiguration
             throw new \Exception('No configuration for this board');
         }
 
-        $this->projectKey = $conf['project_key'];
+        $this->projectKey = $conf['project_key'] ?? '';
         $this->subject = $conf['subject'] ?? null;
         $this->type = $conf['type'] ?? 'Task';
         $this->priority = $conf['priority'] ?? 'Medium';
-        $this->assignee = $conf['assignee'];
+        $this->assignee = $conf['assignee'] ?? '';
         $this->labels = $conf['labels'] ?? [];
     }
 

@@ -34,10 +34,10 @@ class ClassService
     {
         $class = '';
         if (class_exists(\TRAW\PowermailJiraonpremiseIssues\Service\JiraIssueService::class)) {
-            $class = \TRAW\PowermailJiraonpremiseIssues\Service\UserService::class;
+            $class = \TRAW\PowermailJiraonpremiseIssues\Service\JiraIssueService::class;
         }
         if (class_exists(\TRAW\PowermailJiraIssues\Service\JiraIssueService::class)) {
-            $class = \TRAW\PowermailJiraIssues\Service\UserService::class;
+            $class = \TRAW\PowermailJiraIssues\Service\JiraIssueService::class;
         }
         return $class;
     }

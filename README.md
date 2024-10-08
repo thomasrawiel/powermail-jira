@@ -1,7 +1,7 @@
 # powermail-jira-issues
 Post powermail form submissions as jira issues
 
-## Installation 
+## Installation
 This is the base extension, and doesn't work on it's own - please install either https://github.com/thomasrawiel/powermail-jira-issues or https://github.com/thomasrawiel/powermail-jiraonpremise-issues
 
 ## Requirements
@@ -12,7 +12,10 @@ You will need:
 - A personal access token, which you can get https://id.atlassian.com/manage-profile/security/api-tokens
 
 Also see for more configuration infos:
+
 https://github.com/lesstif/php-JiraCloud-RESTAPI
+
+https://github.com/lesstif/php-jira-rest-client
 
 
 ## Configuration
@@ -37,28 +40,69 @@ This user will also be the author of the created issues.
 ### Adding projects
 
 For each project add a configuration array
-
-Some options like Issue type and priority can be configured (WIP)
+Each project can have multiple configurations that are by conditions
 
 ```
 $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
+    'connection' => [
+        'jiraHost' => getenv('JIRAAPI_V3_HOST'),
+        'jiraUser' => getenv('JIRAAPI_V3_USER'),
+        'personalAccessToken' => getenv('JIRAAPI_V3_PERSONAL_ACCESS_TOKEN'),
+    ],
     'issues' => [
-        //configuration key, must be unique, max 20 chars
-        'my_issues' => [
-            //required: label for the configuration select in the powermail form backend form
-            'label' => 'My Issues',
-            //required: the projects project key where the issues are created
-            'project_key' => getenv('PROJECT_KEY_FOR_MY_ISSUES'),
-            //set type for the issues
-            'type' => 'Task',
-            //set priority of the issues
-            'priority' => 'Medium',
-        ],
-        'other_issues' => [
-            'label' => 'Other Issues',
-            'project_key' => getenv('PROJECT_KEY_FOR_OTHER_ISSUES'),
-            'type' => 'Task',
-            'priority' => 'High',
+        //required. configuration key, recommended to be the same as tca value, max 20 chars if tca value is empty
+        'my_project_1' => [
+            'tca' => [
+                //required: label for the configuration select in the powermail form backend form
+                'label' => 'Service Request in Project XYZ',
+                //max 20 chars, leave empty to use configuration key
+                'value' => '',
+            ],
+            //configuration used to create issues in Jira
+            'issueConfiguration' => [
+               //case 1: Used as configuration if powermail_fieldname has the value 'Powermail Field Value 01'
+                [
+                    'project_key' => 'JiraProjectKey',
+                    'type' => 'Task', //Task, Story, etc.
+                    'priority' => 'High',
+                    'customFields' => [
+                        'customfield_10000' => ['name'=>'Group name'], //group field
+                        'customfield_10001' => ['value'=>'Value'], //select field (single)
+                        'customfield_10002 => [ //select field (multiple)
+                            ['value'=>'Value 1'], ['value'=>'Value 2'], /
+                        ],
+                        'customfield_10003' => 'Simple string value',
+                    ],
+                    'labels' => ['label1', 'label2'],
+                    'conditions' => [
+                        'fields' => [
+                            'powermail_fieldname' => ['Powermail Field Value 01'],
+                        ],
+                    ],
+                ],
+                //Case 2: Used as configuration if powermail_fieldname has the value 'Other Powermail Field value' AND powermail_fieldname2 does not have the value 1,2 or 3
+                [
+                    'project_key' => 'JiraProjectKey',
+                    'type' => 'Task',
+                    'priority' => 'Medium',
+                    'assignee' => 'Assigned Username',
+                    'labels' => ['Other label'],
+                    'conditions' => [
+                        'fields' => [
+                            'powermail_fieldname' => ['Other Powermail Field value'],
+                        ],
+                        'notFields' [
+                            'powermail_fieldname2' => [1,2,3]
+                        ]
+                    ],
+                ],
+                //default no condition, always added if no previous configuration condition matched
+                [
+                    'project_key' => 'JiraProjectKey',
+                    'type' => 'Task',
+                    'priority' => 'Medium',
+                ],
+            ],
         ],
     ],
 ];
@@ -66,6 +110,8 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
 Hint: The project key is the prefix of the issue number.  In the example of JRA-123, the "JRA" portion of the issue number is the project key.
 
 The label and project key are required.
+
+
 
 
 ### Usage
@@ -80,6 +126,8 @@ The title of the issue will be the subject of the email to the receiver, that yo
 
 All fields of the form will be added to the description of the issue
 
+Uploads fields are detected automatically and files will be attached to the issue after it has been created.
 
 
-This extension is work in progess and can change anytime.
+
+**This extension is work in progess and can change anytime.**

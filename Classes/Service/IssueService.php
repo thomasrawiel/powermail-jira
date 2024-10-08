@@ -11,15 +11,17 @@ use TRAW\PowermailJira\Events\PowermailSubmitEvent;
 
 /**
  * Class IssueService
- * @package TRAW\PowermailJira\Service
  */
 class IssueService
 {
-
+    /**
+     * @var ConditionalConfiguraton|JiraConfiguration|null
+     */
     protected ConditionalConfiguraton|null $jiraConfiguration = null;
-
+    /**
+     * @var UserLookupService|null
+     */
     protected UserLookupService|null $userLookupService = null;
-
 
     /**
      * @param JiraConfiguration $jiraConfiguration
@@ -52,12 +54,15 @@ class IssueService
         if (empty($configuration)) {
             throw new \Exception('No matching configuration found');
         }
-
         $issueField = (new $issueFieldClass())->setProjectKey($configuration->getProjectKey())
             ->setSummary($configuration->getSubject() ?? $mail->getSubject())
             ->setPriorityNameAsString($configuration->getPriority())
             ->setIssueTypeAsString($configuration->getType())
             ->setDescription($issueDocument->getDescriptionForIssue($event));
+
+        foreach ($configuration->getCustomFields() as $customFieldKey => $customFieldValue) {
+            $issueField->addCustomField($customFieldKey, $customFieldValue);
+        }
 
         foreach ($configuration->getLabels() as $label) {
             $issueField->addLabelAsString($label);
@@ -68,9 +73,9 @@ class IssueService
             if (empty($assignToUser)) {
                 $issueField->setAssigneeToDefault();
             } else {
-                if($assignToUser['accountId']) {
+                if ($assignToUser['accountId']) {
                     $issueField->setAssigneeAccountId($assignToUser['accountId']);
-                }else {
+                } else {
                     //fallback for v2 api
                     $issueField->setAssigneeNameAsString($assignToUser['name']);
                 }

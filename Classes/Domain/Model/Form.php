@@ -4,7 +4,6 @@ namespace TRAW\PowermailJira\Domain\Model;
 
 /**
  * Class Form
- * @package TRAW\PowermailJira\Domain\Model
  */
 class Form extends \In2code\Powermail\Domain\Model\Form
 {
@@ -23,8 +22,6 @@ class Form extends \In2code\Powermail\Domain\Model\Form
 
     /**
      * @param string $jiraTarget
-     *
-     * @return void
      */
     public function setJiraTarget(string $jiraTarget): void
     {

@@ -4,7 +4,6 @@ namespace TRAW\PowermailJira\Validation;
 
 /**
  * Class Validation
- * @package TRAW\PowermailJira\Validation
  */
 class Validation
 {

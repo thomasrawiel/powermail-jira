@@ -11,7 +11,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class PowermailSubmitEventListener
- * @package TRAW\PowermailJira\EventListener
  */
 class PowermailSubmitEventListener
 {
@@ -36,7 +35,6 @@ class PowermailSubmitEventListener
     /**
      * @param PowermailSubmitEvent $event
      *
-     * @return void
      * @throws JiraException
      * @throws \In2code\Powermail\Exception\DeprecatedException
      * @throws \TRAW\PowermailJira\Exception\JiraException

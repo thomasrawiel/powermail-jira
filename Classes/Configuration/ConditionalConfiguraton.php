@@ -3,15 +3,12 @@
 namespace TRAW\PowermailJira\Configuration;
 
 use In2code\Powermail\Domain\Model\Answer;
-use JiraRestApi\Configuration\AbstractConfiguration;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class ConditionalConfiguraton
- * @package TRAW\PowermailJira\Configuration
  */
 class ConditionalConfiguraton extends JiraConfiguration
 {

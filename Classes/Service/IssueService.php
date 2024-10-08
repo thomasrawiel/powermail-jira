@@ -5,7 +5,6 @@ namespace TRAW\PowermailJira\Service;
 use TRAW\PowermailJira\Configuration\ConditionalConfiguraton;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
-use TRAW\PowermailJira\Domain\Model\IssueDocument;
 use TRAW\PowermailJira\Domain\Model\IssueField;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
 

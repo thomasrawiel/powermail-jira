@@ -11,14 +11,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class JiraConfiguration
- * @package TRAW\PowermailJira\Configuration
  */
 class JiraConfiguration
 {
     /**
      * @param $params
-     *
-     * @return void
      */
     public function loadJiraConfigurationForTCA(&$params): void
     {

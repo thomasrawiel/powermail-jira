@@ -2,7 +2,6 @@
 
 namespace TRAW\PowermailJira\Service;
 
-
 class ClassService
 {
     public static function getArrayConfigurationClass(): string

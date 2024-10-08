@@ -67,8 +67,6 @@ class IssueConfiguration
 
     /**
      * @param string $projectKey
-     *
-     * @return void
      */
     public function setProjectKey(string $projectKey): void
     {
@@ -85,8 +83,6 @@ class IssueConfiguration
 
     /**
      * @param string|null $subject
-     *
-     * @return void
      */
     public function setSubject(?string $subject): void
     {
@@ -103,8 +99,6 @@ class IssueConfiguration
 
     /**
      * @param string $type
-     *
-     * @return void
      */
     public function setType(string $type): void
     {
@@ -121,8 +115,6 @@ class IssueConfiguration
 
     /**
      * @param array|string $priority
-     *
-     * @return void
      */
     public function setPriority(array|string $priority): void
     {
@@ -139,8 +131,6 @@ class IssueConfiguration
 
     /**
      * @param array|string $assignee
-     *
-     * @return void
      */
     public function setAssignee(array|string $assignee): void
     {
@@ -157,8 +147,6 @@ class IssueConfiguration
 
     /**
      * @param bool $assigneeIsAccountId
-     *
-     * @return void
      */
     public function setAssigneeIsAccountId(bool $assigneeIsAccountId): void
     {
@@ -175,8 +163,6 @@ class IssueConfiguration
 
     /**
      * @param array $labels
-     *
-     * @return void
      */
     public function setLabels(array $labels): void
     {
@@ -193,20 +179,15 @@ class IssueConfiguration
 
     /**
      * @param array $customFields
-     *
-     * @return void
      */
     public function setCustomFields(array $customFields): void
     {
         $this->customFields = $customFields;
     }
 
-
     /**
      * @param $key
      * @param $value
-     *
-     * @return void
      */
     public function set($key, $value)
     {

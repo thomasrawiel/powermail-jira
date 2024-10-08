@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die('Access denied.');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(\TRAW\PowermailJira\Domain\Model\Form::TABLE_NAME, [
@@ -19,7 +20,6 @@ defined('TYPO3') || die('Access denied.');
         ],
     ],
 ]);
-
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     \TRAW\PowermailJira\Domain\Model\Form::TABLE_NAME,

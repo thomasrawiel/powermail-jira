@@ -7,7 +7,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Class PowermailSubmitEvent
- * @package LINGNER\LinExperience\Events
  */
 class PowermailSubmitEvent
 {

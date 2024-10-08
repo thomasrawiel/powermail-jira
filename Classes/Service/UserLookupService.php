@@ -2,13 +2,10 @@
 
 namespace TRAW\PowermailJira\Service;
 
-use TRAW\PowermailJira\Configuration\ArrayConfiguration;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class UserLookupService
- * @package TRAW\PowermailJira\Service
  */
 class UserLookupService
 {
@@ -49,7 +46,9 @@ class UserLookupService
 
         foreach (['accountId', 'emailAddress', 'name', 'displayName', 'key'] as $searchColumn) {
             $found = array_search($searchString, array_column($users, $searchColumn));
-            if ($found !== false) break;
+            if ($found !== false) {
+                break;
+            }
         }
 
         return $found !== false ? $users[$found]->toArray() : [];

@@ -8,12 +8,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SubmitFormFinisher
- * @package TRAW\PowermailJira\Finisher
  */
 class SubmitFormFinisher extends \In2code\Powermail\Finisher\AbstractFinisher
 {
     /**
-     * @return void
      * @throws \TYPO3\CMS\Frontend\ContentObject\Exception\ContentRenderingException
      */
     public function myFinisher()

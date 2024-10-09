@@ -63,9 +63,9 @@ class IssueService
             $issueField->addCustomField($customFieldKey, $customFieldValue);
         }
 
-        foreach ($configuration->getLabels() as $label) {
-            $issueField->addLabelAsString($label);
-        }
+//        foreach ($configuration->getLabels() as $label) {
+//            $issueField->addLabelAsString($label);
+//        }
 
         if (!empty($configuration->getAssignee())) {
             $assignToUser = $this->userLookupService->lookup($configuration->getAssignee(), $configuration->getProjectKey());

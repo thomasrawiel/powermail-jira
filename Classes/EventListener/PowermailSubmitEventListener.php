@@ -3,6 +3,7 @@
 namespace TRAW\PowermailJira\EventListener;
 
 use In2code\Powermail\Domain\Model\Answer;
+use TRAW\PowermailJira\Configuration\ConditionalConfiguraton;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
 use TRAW\PowermailJira\Service\ClassService;
@@ -30,6 +31,7 @@ class PowermailSubmitEventListener
     {
         $this->issueService = $issueService;
         $this->jiraConfig = new JiraConfiguration();
+        $this->config = new ConditionalConfiguraton();
     }
 
     /**
@@ -56,6 +58,15 @@ class PowermailSubmitEventListener
             $issue = $jiraIssueService->create($issueField);
         } catch (\Exception $exception) {
             throw $exception;
+        }
+
+        $configuration = $this->config->getConfiguration($event);
+        if (count($configuration->getLabels())) {
+            try {
+                $jiraIssueService->updateLabels($issue->key, $configuration->getLabels(), [], false);
+            } catch (\Exception $exception) {
+                throw $exception;
+            }
         }
 
         $uploads = $event->getMail()->getAnswersByValueType(Answer::VALUE_TYPE_UPLOAD);

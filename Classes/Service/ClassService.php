@@ -64,4 +64,15 @@ class ClassService
         }
         return $class;
     }
+
+    public static function getReporterClass(): string {
+        $class = '';
+        if (class_exists(\JiraRestApi\Issue\Reporter::class)) {
+            $class = \JiraRestApi\Issue\Reporter::class;
+        }
+        if (class_exists(\JiraCloud\Issue\Reporter::class)) {
+            $class = \JiraCloud\Issue\Reporter::class;
+        }
+        return $class;
+    }
 }

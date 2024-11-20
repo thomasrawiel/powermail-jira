@@ -5,6 +5,7 @@ namespace TRAW\PowermailJira\Configuration;
 use In2code\Powermail\Domain\Model\Answer;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
+use TRAW\PowermailJira\Utility\AnswerUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -65,7 +66,7 @@ class ConditionalConfiguraton extends JiraConfiguration
     {
         if (isset($conditions['fields'])) {
             foreach ($conditions['fields'] as $cmpField => $cmpValues) {
-                $cmpAnswer = $this->filterAnswersForConditionField($cmpField);
+                $cmpAnswer = AnswerUtility::filterAnswersForField($this->answers, $cmpField);
 
                 if (empty($cmpAnswer) || !in_array($cmpAnswer->getValue(), $cmpValues)) {
                     return false;
@@ -74,7 +75,7 @@ class ConditionalConfiguraton extends JiraConfiguration
         }
         if (isset($conditions['notFields'])) {
             foreach ($conditions['notFields'] as $cmpField => $cmpValues) {
-                $cmpAnswer = $this->filterAnswersForConditionField($cmpField);
+                $cmpAnswer = AnswerUtility::filterAnswersForField($this->answers, $cmpField);
 
                 if (!empty($cmpAnswer) && in_array($cmpAnswer->getValue(), $cmpValues)) {
                     return false;
@@ -83,19 +84,5 @@ class ConditionalConfiguraton extends JiraConfiguration
         }
 
         return true;
-    }
-
-    /**
-     * Returns the Answer that has the $fieldName as marker/name
-     *
-     * @param string $fieldName
-     *
-     * @return Answer|null
-     */
-    protected function filterAnswersForConditionField(string $fieldName): ?Answer
-    {
-        return array_values(array_filter($this->answers->toArray(), function ($answer) use ($fieldName) {
-            return $answer->getField()->getMarker() === $fieldName;
-        }))[0] ?? null;
     }
 }

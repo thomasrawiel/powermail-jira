@@ -41,6 +41,8 @@ class IssueConfiguration
      */
     protected array $customFields = [];
 
+    protected string $reporterFieldName = '';
+
     /**
      * @param array|null $conf
      *
@@ -55,6 +57,7 @@ class IssueConfiguration
         $this->assignee = $conf['assignee'] ?? '';
         $this->labels = $conf['labels'] ?? [];
         $this->customFields = $conf['customFields'] ?? [];
+        $this->reporterFieldName = $conf['reporterFieldName'] ?? '';
     }
 
     /**
@@ -183,6 +186,16 @@ class IssueConfiguration
     public function setCustomFields(array $customFields): void
     {
         $this->customFields = $customFields;
+    }
+
+    public function getReporterFieldName(): string
+    {
+        return $this->reporterFieldName;
+    }
+
+    public function setReporterFieldName(string $reporterFieldName): void
+    {
+        $this->reporterFieldName = $reporterFieldName;
     }
 
     /**

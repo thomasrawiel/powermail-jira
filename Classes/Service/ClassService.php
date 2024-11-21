@@ -1,9 +1,17 @@
 <?php
-
+declare(strict_types=1);
 namespace TRAW\PowermailJira\Service;
 
+/**
+ * Class ClassService
+ *
+ * Get classnames depending on which Jira Client Extension is installed
+ */
 class ClassService
 {
+    /**
+     * @return string
+     */
     public static function getArrayConfigurationClass(): string
     {
         $class = '';
@@ -16,6 +24,9 @@ class ClassService
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public static function getUserServiceClass(): string
     {
         $class = '';
@@ -29,6 +40,9 @@ class ClassService
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public static function getJiraIssueServiceClass(): string
     {
         $class = '';
@@ -41,6 +55,9 @@ class ClassService
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public static function getIssueDocumentClass(): string
     {
         $class = '';
@@ -53,6 +70,9 @@ class ClassService
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public static function getIssueFieldClass(): string
     {
         $class = '';
@@ -65,6 +85,9 @@ class ClassService
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public static function getReporterClass(): string {
         $class = '';
         if (class_exists(\JiraRestApi\Issue\Reporter::class)) {

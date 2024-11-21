@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace TRAW\PowermailJira\Domain\Model;
 
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;

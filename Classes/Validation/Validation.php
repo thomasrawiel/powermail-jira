@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace TRAW\PowermailJira\Validation;
 
 /**
@@ -29,6 +29,12 @@ class Validation
         return self::validateIssueConfiguration($issueConfiguration);
     }
 
+    /**
+     * @param array|null $issueConfiguration
+     *
+     * @return bool
+     * @throws \Exception
+     */
     protected static function validateIssueConfiguration(?array $issueConfiguration): bool
     {
         if (empty($issueConfiguration)) {

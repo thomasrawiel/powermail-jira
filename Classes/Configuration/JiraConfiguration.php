@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace TRAW\PowermailJira\Configuration;
 
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;

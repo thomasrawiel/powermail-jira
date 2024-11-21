@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace TRAW\PowermailJira\Events;
 
 use In2code\Powermail\Domain\Model\Mail;

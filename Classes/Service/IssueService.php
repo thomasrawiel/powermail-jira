@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
+
 namespace TRAW\PowermailJira\Service;
 
-use JiraRestApi\Issue\Reporter;
 use TRAW\PowermailJira\Configuration\ConditionalConfiguraton;
 use TRAW\PowermailJira\Configuration\JiraConfiguration;
+use TRAW\PowermailJira\Domain\Model\CustomFields\AbstractCustomField;
+use TRAW\PowermailJira\Domain\Model\CustomFields\MarkerValueCustomField;
+use TRAW\PowermailJira\Domain\Model\CustomFields\SimpleValueCustomField;
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Domain\Model\IssueField;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
@@ -52,7 +55,7 @@ class IssueService
         $issueFieldClass = ClassService::getIssueFieldClass();
         $issueDocument = new $issueDocumentClass();
 
-        if(empty($issueFieldClass) || empty($issueFieldClass)) {
+        if (empty($issueFieldClass) || empty($issueFieldClass)) {
             throw new \Exception('Depending classes missing');
         }
 
@@ -66,9 +69,9 @@ class IssueService
             ->setIssueTypeAsString($configuration->getType())
             ->setDescription($issueDocument->getDescriptionForIssue($event));
 
-        if(!empty($configuration->getReporterFieldName())) {
+        if (!empty($configuration->getReporterFieldName())) {
             $reporterField = AnswerUtility::filterAnswersForField($answers, $configuration->getReporterFieldName());
-            if(!empty($reporterField)) {
+            if (!empty($reporterField)) {
                 $reporterClass = ClassService::getReporterClass();
                 $reporter = new $reporterClass();
                 $reporter->emailAddress = $reporterField->getValue();
@@ -78,7 +81,25 @@ class IssueService
         }
 
         foreach ($configuration->getCustomFields() as $customFieldKey => $customFieldValue) {
-            $issueField->addCustomField($customFieldKey, $customFieldValue);
+            if (is_a($customFieldValue, AbstractCustomField::class)) {
+                $key = $customFieldValue->getKey();
+
+                if (is_a($customFieldValue, SimpleValueCustomField::class)) {
+                    $value = $customFieldValue->getValue();
+                } elseif (is_a($customFieldValue, MarkerValueCustomField::class)) {
+                    $markerField = AnswerUtility::filterAnswersForField($answers, $customFieldValue->getMarkerFieldName());
+                    if (empty($markerField)) {
+                        throw new \Exception('Marker not found in current form: (' . $customFieldValue->getMarkerFieldName() . ')');
+                    }
+                    $value = $markerField->getValue();
+                } else {
+                    throw new \Exception('Couldn\'t determine custom field type');
+                }
+            } else {
+                $key = $customFieldKey;
+                $value = $customFieldValue;
+            }
+            $issueField->addCustomField($key, $value);
         }
 
         if (!empty($configuration->getAssignee())) {

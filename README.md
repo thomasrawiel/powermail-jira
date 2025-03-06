@@ -72,6 +72,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
                             ['value'=>'Value 1'], ['value'=>'Value 2'], /
                         ],
                         'customfield_10003' => 'Simple string value',
+                        new \TRAW\PowermailJira\Domain\Model\CustomFields\SimpleValueCustomField('customfield_10004', 'simple string value'),
+                        new \TRAW\PowermailJira\Domain\Model\CustomFields\SimpleValueCustomField('customfield_10005', ['value'=>'Value']), //select field (single)
+                        new \TRAW\PowermailJira\Domain\Model\CustomFields\SimpleValueCustomField('customfield_10006', [ //select field (multiple)
+                            ['value'=>'Value 1'], ['value'=>'Value 2'], /
+                        ]), //select field (multiple)
+                        new \TRAW\PowermailJira\Domain\Model\CustomFields\MarkerValueCustomField('customfield_10007', 'e_mailadress_marker_name'), //marker from form
                     ],
                     'labels' => ['label1', 'label2'],
                     'conditions' => [
@@ -110,6 +116,12 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['powermail_jira'] = [
 Hint: The project key is the prefix of the issue number.  In the example of JRA-123, the "JRA" portion of the issue number is the project key.
 
 The label and project key are required.
+
+
+**New with version 1.2.0**
+You can now add values from the form itself to custom fields by adding a `MarkerValueCustomField` to the custom field configuration.
+
+See example above.
 
 
 

@@ -87,7 +87,8 @@ class IssueService
                 if (is_a($customFieldValue, SimpleValueCustomField::class)) {
                     $value = $customFieldValue->getValue();
                 } elseif (is_a($customFieldValue, MarkerValueCustomField::class)) {
-                    $markerField = AnswerUtility::filterAnswersForField($answers, $customFieldValue->getMarkerFieldName());
+                    $markerField = AnswerUtility::filterAnswersForField($answers, $customFieldValue->getMarkerFieldName())
+                        ?? AnswerUtility::filterAnswersForFieldUid($answers, $customFieldValue->getUid());
                     if (empty($markerField)) {
                         throw new \Exception('Marker not found in current form: (' . $customFieldValue->getMarkerFieldName() . ')');
                     }

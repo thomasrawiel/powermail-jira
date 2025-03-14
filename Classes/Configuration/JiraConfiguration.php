@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
+
 namespace TRAW\PowermailJira\Configuration;
 
 use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Validation\Validation;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Schema\Struct\SelectItem;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -19,16 +19,11 @@ class JiraConfiguration
      */
     public function loadJiraConfigurationForTCA(&$params): void
     {
-        $items = $this->getConfigurationKeyValues();
+        $configuration = array_filter($this->getConfigurationKeyValues());
 
-        //switch between old and new
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() < 12) {
-            $params['items'] = array_merge($params['items'], $items);
-        } else {
-            $params['items'] = array_merge($params['items'], array_map(function ($item) {
-                return new SelectItem('select', $item[0], $item[1]);
-            }, $items));
-        }
+        $params['items'] = array_merge($params['items'], array_map(function ($item) {
+            return new SelectItem('select', $item[0], $item[1]);
+        }, $configuration));
     }
 
     /**
@@ -68,6 +63,7 @@ class JiraConfiguration
             if (Validation::validateConfiguration($key, $config)) {
                 return [$config['tca']['label'], empty($config['tca']['value']) ? $key : $config['tca']['value']];
             }
+            return null;
         }, $configuration, array_keys($configuration)) : [];
     }
 

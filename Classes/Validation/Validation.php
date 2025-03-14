@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace TRAW\PowermailJira\Validation;
 
 /**
@@ -26,7 +27,11 @@ class Validation
             throw new \Exception('Configuration key is too long (max 20 chars)');
         }
 
-        return self::validateIssueConfiguration($issueConfiguration);
+        if ($configuration['enabled'] ?? false) {
+            return self::validateIssueConfiguration($issueConfiguration);
+        }
+        
+        return false;
     }
 
     /**

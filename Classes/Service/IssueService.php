@@ -63,8 +63,17 @@ class IssueService
             throw new \Exception('No matching configuration found');
         }
 
+        $subject = $configuration->getSubject() ?? $mail->getSubject();
+
+        if (empty($subject)) {
+            $subject = $mail->getForm()->getTitle();
+        }
+        if (empty($subject)) {
+            $subject = 'No subject set for form ' . $mail->getForm()->getUid();
+        }
+
         $issueField = (new $issueFieldClass())->setProjectKey($configuration->getProjectKey())
-            ->setSummary($configuration->getSubject() ?? $mail->getSubject())
+            ->setSummary($subject)
             ->setPriorityNameAsString($configuration->getPriority())
             ->setIssueTypeAsString($configuration->getType())
             ->setDescription($issueDocument->getDescriptionForIssue($event));

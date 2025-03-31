@@ -12,6 +12,7 @@ use TRAW\PowermailJira\Domain\Model\DTO\IssueConfiguration;
 use TRAW\PowermailJira\Domain\Model\IssueField;
 use TRAW\PowermailJira\Events\PowermailSubmitEvent;
 use TRAW\PowermailJira\Utility\AnswerUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class IssueService
@@ -65,6 +66,10 @@ class IssueService
 
         $subject = $configuration->getSubject() ?? $mail->getSubject();
 
+        if(is_a($subject, AbstractCustomField::class)) {
+            $subject = $this->getValueFromAbstractCustomField($subject, $answers);
+        }
+
         if (empty($subject)) {
             $subject = $mail->getForm()->getTitle();
         }
@@ -92,19 +97,7 @@ class IssueService
         foreach ($configuration->getCustomFields() as $customFieldKey => $customFieldValue) {
             if (is_a($customFieldValue, AbstractCustomField::class)) {
                 $key = $customFieldValue->getKey();
-
-                if (is_a($customFieldValue, SimpleValueCustomField::class)) {
-                    $value = $customFieldValue->getValue();
-                } elseif (is_a($customFieldValue, MarkerValueCustomField::class)) {
-                    $markerField = AnswerUtility::filterAnswersForField($answers, $customFieldValue->getMarkerFieldName())
-                        ?? AnswerUtility::filterAnswersForFieldUid($answers, $customFieldValue->getUid());
-                    if (empty($markerField)) {
-                        throw new \Exception('Marker not found in current form: (' . $customFieldValue->getMarkerFieldName() . ')');
-                    }
-                    $value = $markerField->getValue();
-                } else {
-                    throw new \Exception('Couldn\'t determine custom field type');
-                }
+                $value = $this->getValueFromAbstractCustomField($customFieldValue, $answers);
             } else {
                 $key = $customFieldKey;
                 $value = $customFieldValue;
@@ -127,5 +120,28 @@ class IssueService
         }
 
         return $issueField;
+    }
+
+    /**
+     * @param AbstractCustomField $customField
+     * @param ObjectStorage       $answers
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function getValueFromAbstractCustomField(AbstractCustomField $customField, ObjectStorage $answers): string {
+        if (is_a($customField, SimpleValueCustomField::class)) {
+            $value = $customField->getValue();
+        } elseif (is_a($customField, MarkerValueCustomField::class)) {
+            $markerField = AnswerUtility::filterAnswersForField($answers, $customField->getMarkerName())
+                ?? AnswerUtility::filterAnswersForFieldUid($answers, $customField->getUid());
+            if (empty($markerField)) {
+                throw new \Exception('Marker not found in current form: (' . $customField->getMarkerName() . ')');
+            }
+            $value = $markerField->getValue();
+        } else {
+            throw new \Exception('Couldn\'t determine custom field type');
+        }
+        return $value;
     }
 }

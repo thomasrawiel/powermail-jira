@@ -18,7 +18,7 @@ abstract class AbstractCustomField
      */
     public function getKey(): string
     {
-        if (str_starts_with($this->key, 'customfield_')) {
+        if (str_starts_with($this->key, 'customfield_') || $this->key === 'summary') {
             return $this->key;
         } else {
             return 'customfield_' . $this->key;

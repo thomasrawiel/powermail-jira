@@ -10,11 +10,6 @@ use http\Exception\InvalidArgumentException;
 final class MarkerValueCustomField extends AbstractCustomField
 {
     /**
-     * @var string
-     */
-    protected ?string $markerFieldName = null;
-
-    /**
      * @var int|null
      */
     protected ?int $uid = null;
@@ -37,7 +32,7 @@ final class MarkerValueCustomField extends AbstractCustomField
     /**
      * @return string|null
      */
-    public function getMarkerFieldName(): ?string
+    public function getMarkerName(): ?string
     {
         return $this->markerName;
     }

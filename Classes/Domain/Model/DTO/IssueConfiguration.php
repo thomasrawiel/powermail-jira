@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace TRAW\PowermailJira\Domain\Model\DTO;
 
+use TRAW\PowermailJira\Domain\Model\CustomFields\AbstractCustomField;
+
 /**
  * Class IssueConfiguration
  */
@@ -14,7 +16,7 @@ class IssueConfiguration
     /**
      * @var string|mixed|null
      */
-    protected ?string $subject = null;
+    protected null|string|AbstractCustomField $subject = null;
     /**
      * @var string|mixed
      */
@@ -77,17 +79,17 @@ class IssueConfiguration
     }
 
     /**
-     * @return string|null
+     * @return string|AbstractCustomField|null
      */
-    public function getSubject(): ?string
+    public function getSubject(): null|string|AbstractCustomField
     {
         return $this->subject;
     }
 
     /**
-     * @param string|null $subject
+     * @param null|string|AbstractCustomField $subject
      */
-    public function setSubject(?string $subject): void
+    public function setSubject(null|string|AbstractCustomField $subject): void
     {
         $this->subject = $subject;
     }

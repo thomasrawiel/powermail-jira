@@ -10,7 +10,7 @@ class Form extends \In2code\Powermail\Domain\Model\Form
     /**
      * @var string
      */
-    protected string $jiraTarget;
+    protected string $jiraTarget = '';
 
     /**
      * @return string

@@ -13,10 +13,16 @@ final class MarkerValueCustomField extends AbstractCustomField
      * @var int|null
      */
     protected ?int $uid = null;
+    /**
+     * @var string|null
+     */
+    protected ?string $markerName = null;
+
 
     /**
-     * @param string $key
-     * @param string $markerName
+     * @param string      $key
+     * @param string|null $markerName
+     * @param int|null    $uid
      */
     public function __construct(string $key, ?string $markerName = null, ?int $uid = null)
     {
